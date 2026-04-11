@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Describer - For the Visually Impaired</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4cb5c3;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --warning-color: #ffc107;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .upload-area {
+            border: 3px dashed var(--accent-color);
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: rgba(76, 181, 195, 0.05);
+        }
+        
+        .upload-area:hover {
+            background-color: rgba(76, 181, 195, 0.1);
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .upload-area h3 {
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .upload-area p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-accent {
+            background: var(--accent-color);
+        }
+        
+        .btn-accent:hover {
+            background: #3a9ca8;
+        }
+        
+        .btn-large {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+        }
+        
+        .image-preview {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-section h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .description-box {
+            background: #f8f9fa;
+            border-left: 5px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 20px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .description-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .placeholder-text {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .tech-stack {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tech-stack h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .tech-icons {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .tech-item {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .tech-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .tech-item span {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .high-contrast {
+            filter: contrast(1.5);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .upload-section, .result-section {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-eye"></i> Image Describer</h1>
+            <p>An AI-powered application that describes images for the visually impaired</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="app-container">
+            <section class="upload-section" aria-labelledby="upload-heading">
+                <h2 id="upload-heading" class="sr-only">Image Upload</h2>
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Upload an Image</h3>
+                    <p>Drag & drop an image or click to browse</p>
+                    <button class="btn btn-large" id="browseBtn">Browse Files</button>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                </div>
+                
+                <div class="image-preview hidden" id="imagePreview">
+                    <img id="previewImg" src="" alt="Preview of the uploaded image">
+                    <div class="controls" style="margin-top: 20px;">
+                        <button class="btn" id="analyzeBtn"><i class="fas fa-search"></i> Describe Image</button>
+                        <button class="btn" id="removeBtn"><i class="fas fa-times"></i> Remove Image</button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="result-section" aria-labelledby="result-heading">
+                <h2 id="result-heading"><i class="fas fa-comment-alt"></i> Image Description</h2>
+                <div class="description-box">
+                    <p class="description-text placeholder-text" id="descriptionText">Your image description will appear here after analysis.</p>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-accent" id="speakBtn" disabled><i class="fas fa-volume-up"></i> Read Aloud</button>
+                    <button class="btn" id="copyBtn" disabled><i class="fas fa-copy"></i> Copy Text</button>
+                </div>
+            </section>
+            
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>AI is analyzing your image...</p>
+            </div>
+            
+            <section class="tech-stack" aria-labelledby="tech-heading">
+                <h2 id="tech-heading">Technology Stack</h2>
+                <div class="tech-icons">
+                    <div class="tech-item">
+                        <i class="fab fa-react"></i>
+                        <span>React</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-python"></i>
+                        <span>Python Flask</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-robot"></i>
+                        <span>GPT-4 Vision</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-server"></i>
+                        <span>REST API</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Image Describer - Making visual content accessible through AI</p>
+            <p>This is a frontend demonstration. Backend integration would be needed for full functionality.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const browseBtn = document.getElementById('browseBtn');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const removeBtn = document.getElementById('removeBtn');
+            const descriptionText = document.getElementById('descriptionText');
+            const speakBtn = document.getElementById('speakBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            // Event listeners
+            browseBtn.addEventListener('click', () => fileInput.click());
+            uploadArea.addEventListener('click', () => fileInput.click());
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('drop', handleDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+            analyzeBtn.addEventListener('click', analyzeImage);
+            removeBtn.addEventListener('click', removeImage);
+            speakBtn.addEventListener('click', readDescription);
+            copyBtn.addEventListener('click', copyDescription);
+            
+            // Drag and drop handlers
+            function handleDragOver(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.style.borderColor = '#4cb5c3';
+                uploadArea.style.backgroundColor = 'rgba(76, 181, 195, 0.15)';
+            }
+            
+            function handleDrop(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.style.borderColor = '#4cb5c3';
+                uploadArea.style.backgroundColor = 'rgba(76, 181, 195, 0.05)';
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    handleFile(e.dataTransfer.files[0]);
+                }
+            }
+            
+            // File selection handler
+            function handleFileSelect(e) {
+                if (e.target.files && e.target.files[0]) {
+                    handleFile(e.target.files[0]);
+                }
+            }
+            
+            function handleFile(file) {
+                if (!file.type.match('image.*')) {
+                    alert('Please select an image file (JPEG, PNG, etc.)');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    uploadArea.style.display = 'none';
+                    resetDescription();
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            // Remove image handler
+            function removeImage() {
+                imagePreview.classList.add('hidden');
+                uploadArea.style.display = 'block';
+                fileInput.value = '';
+                resetDescription();
+            }
+            
+            // Reset description
+            function resetDescription() {
+                descriptionText.textContent = 'Your image description will appear here after analysis.';
+                descriptionText.classList.add('placeholder-text');
+                speakBtn.disabled = true;
+                copyBtn.disabled = true;
+            }
+            
+            // Analyze image (mock implementation)
+            function analyzeImage() {
+                loadingIndicator.style.display = 'block';
+                
+                // In a real application, this would send the image to the Flask backend
+                // which would then call the GPT-4 Vision API
+                setTimeout(() => {
+                    loadingIndicator.style.display = 'none';
+                    
+                    // Mock response - in a real app, this would come from the backend
+                    const mockDescriptions = [
+                        "This image shows a golden retriever dog playing in a green park. The dog is running towards a red ball with its tongue out. In the background, there are trees and a blue sky with white clouds.",
+                        "A person is sitting at a wooden desk with a laptop, a cup of coffee, and a notebook. The room has a large window with sunlight streaming in, and there's a bookshelf in the background filled with books.",
+                        "A beautiful sunset over a calm lake with mountains in the distance. The sky is painted in shades of orange, pink, and purple, reflecting on the water's surface. There are silhouettes of trees along the shoreline.",
+                        "A group of diverse people collaborating around a whiteboard in a modern office. One person is pointing at a diagram while others are listening attentively. The room has large windows and modern furniture."
+                    ];
+                    
+                    const randomDescription = mockDescriptions[Math.floor(Math.random() * mockDescriptions.length)];
+                    
+                    descriptionText.textContent = randomDescription;
+                    descriptionText.classList.remove('placeholder-text');
+                    speakBtn.disabled = false;
+                    copyBtn.disabled = false;
+                }, 2000);
+            }
+            
+            // Text-to-speech functionality
+            function readDescription() {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(descriptionText.textContent);
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    window.speechSynthesis.speak(utterance);
+                    
+                    // Change button during speech
+                    speakBtn.innerHTML = '<i class="fas fa-volume-mute"></i> Stop Reading';
+                    speakBtn.onclick = stopReading;
+                    
+                    // Reset button when speech ends
+                    utterance.onend = function() {
+                        speakBtn.innerHTML = '<i class="fas fa-volume-up"></i> Read Aloud';
+                        speakBtn.onclick = readDescription;
+                    };
+                } else {
+                    alert('Text-to-speech is not supported in your browser. Please try a modern browser like Chrome or Edge.');
+                }
+            }
+            
+            function stopReading() {
+                window.speechSynthesis.cancel();
+                speakBtn.innerHTML = '<i class="fas fa-volume-up"></i> Read Aloud';
+                speakBtn.onclick = readDescription;
+            }
+            
+            // Copy to clipboard
+            function copyDescription() {
+                const textArea = document.createElement('textarea');
+                textArea.value = descriptionText.textContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Visual feedback
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

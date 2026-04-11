@@ -1,0 +1,103 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #4a6fa5, #166088);
+  color: white;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.app-header h1 {
+  margin: 0 0 1rem 0;
+  font-size: 2.5rem;
+}
+
+.app-header p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 1.2rem;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.upload-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.upload-section input {
+  margin: 1rem 0;
+  padding: 0.5rem;
+}
+
+.image-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.image-preview {
+  margin-bottom: 1rem;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 8px;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.controls button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  background: #4a6fa5;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.controls button:hover {
+  background: #166088;
+}
+
+.controls button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.result-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.result-section h2 {
+  color: #166088;
+  margin-top: 0;
+}
+
+.result-section p {
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
